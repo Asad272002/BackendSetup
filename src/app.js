@@ -16,4 +16,12 @@ app.post('/note', (req,res)=>{
 })
 
 
+app.get ('/note', (req,res)=>{
+    res.status (200).json({
+        message : "Contents for notes",
+        notes: notes 
+
+    })
+})
+
 module.exports = app;
