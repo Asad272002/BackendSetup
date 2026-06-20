@@ -1,54 +1,40 @@
-const express = require ("express");
-
+const express = require ('express');
 
 const app = express();
 
-const notes=[]
-app.use(express.json()); //this is middleware
+app.use(express.json());
+
+const noteModel = require ("./models/note.model")
+
+// note = {title, description}
+
+// first you need to tell the db what type of data 
+// you wanna store thats called as a schema 
 
 
-app.post('/note', (req,res)=>{
-    notes.push(req.body)
+app.post ('/notes', async (req,res)=>{
+    const data = req.body
 
-    res.status(201).json({
-        message : "Response successfully sent"
-    })// send a success 201 status code with the json message back to server 
-})
-
-
-app.get ('/note', (req,res)=>{
-    res.status (200).json({
-        message : "Contents for notes",
-        notes: notes 
-
+    await noteModel.create({
+        title : data.title,
+        description : data.description
     })
-})
-
-// delete /note :index
-app.delete('/note/:index', (req,res)=>{
-
-    const index= req.params.index
-
-    delete notes [index]
 
     res.status(200).json({
-        message : "Note Deleted Successfully" 
+        message : "Note Created Successfully"
     })
 })
 
-app.patch('/note/:index', (req,res)=>{
-    const index = req.params.index
-    const description = req.body.description 
-    const title = req.body.title
 
+app.get ("/notes", async (req,res)=>{
 
-    notes [index].description = description
-    notes [index].title = title
+    const notes = await noteModel.find()
 
-
-    res.status (200).json ({
-        message : "note updated successfully"
+    res.status(200).json({
+        message : "Here are all your requested notes",
+        notes : notes
     })
+
 })
 
 module.exports = app;
